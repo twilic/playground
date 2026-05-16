@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+/**
+ * Copies ../recurram-js/wasm/pkg into playground/wasm/pkg so TypeScript + Vite can resolve
+ * `import "*.wasm"` from inside this workspace (runs before `tsc -b` during `pnpm build`).
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const playgroundDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const source = path.resolve(playgroundDir, '..', 'recurram-js', 'wasm', 'pkg');
+const dest = path.join(playgroundDir, 'wasm', 'pkg');
+
+if (!fs.existsSync(source)) {
+  console.error(`[sync-recurram-wasm] Missing ${source}`);
+  console.error(`  Build WASM in recurram-js first: pnpm build:wasm`);
+  process.exit(1);
+}
+
+fs.mkdirSync(dest, { recursive: true });
+fs.cpSync(source, dest, { recursive: true });
