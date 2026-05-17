@@ -122,11 +122,7 @@ export default function App() {
           </Text>
           <Text variant="secondary" as="p">
             Compare encoded sizes with{' '}
-            <Link
-              href="https://github.com/twilic/benchmark"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Link href="https://github.com/twilic/benchmark" target="_blank" rel="noreferrer">
               benchmark
             </Link>{' '}
             rules. Uses local
