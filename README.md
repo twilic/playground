@@ -1,4 +1,4 @@
-# Twilic playground
+# Twilic Playground
 
 **Suggested GitHub repository description:** Playground for testing Twilic encoding and visualizing size savings.
 
@@ -19,7 +19,7 @@ This project always depends on a **local sibling** [`twilic-js`](https://github.
 | ----------------- | -------------------------------------------------------------------------------------- |
 | UI                | [@cloudflare/kumo](https://kumo-ui.com/) + [Tailwind CSS v4](https://tailwindcss.com/) |
 | App               | React 19, TypeScript, Vite 8 (Rolldown)                                                |
-| Encoding          | Local `twilic-js` (WASM)                                                             |
+| Encoding          | Local `twilic-js` (WASM)                                                               |
 | Comparison codecs | `@msgpack/msgpack`, `cbor-x`, `bson`                                                   |
 
 ## Prerequisites
