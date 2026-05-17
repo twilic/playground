@@ -16,7 +16,7 @@ import {
   sanityCheckDecodes,
   type SizeComparisonRow,
 } from './encodedSizes.js';
-import { init } from 'twilic/advanced';
+import { init } from '@twilic/core/advanced';
 
 type TwilicRuntime = Awaited<ReturnType<typeof init>>;
 

@@ -44,6 +44,14 @@ function pagesBase(): string {
   return '/';
 }
 
+function isTwilicCorePath(filePath: string | undefined): boolean {
+  if (!filePath) {
+    return false;
+  }
+  const norm = filePath.replaceAll('\\', '/');
+  return norm.includes('/@twilic/core/') || norm.includes('/twilic-js/');
+}
+
 /** Force browser shims so we do not bundle Node-only N-API loaders or `.node` binaries. */
 function twilicBackendAliases(): Plugin {
   const stubNode = path.join(playgroundDir, 'src', 'shims', 'twilic-node-backend.ts');
@@ -53,19 +61,15 @@ function twilicBackendAliases(): Plugin {
     name: 'twilic-backend-aliases',
     enforce: 'pre',
     resolveId(source, importer) {
-      const fromTwilic = importer?.includes(`${path.sep}twilic${path.sep}`) ?? false;
-      if (
-        !fromTwilic &&
-        !source.includes(`${path.sep}twilic${path.sep}`) &&
-        !source.includes('/twilic/')
-      ) {
+      const fromTwilic = isTwilicCorePath(importer);
+      if (!fromTwilic && !isTwilicCorePath(source)) {
         return null;
       }
 
       if (source === './backend.js') {
         const norm = importer?.replaceAll('\\', '/') ?? '';
         if (
-          norm.includes('/twilic/') &&
+          isTwilicCorePath(norm) &&
           norm.includes('/dist/') &&
           /[/](index|advanced)\.js$/.test(norm)
         ) {
@@ -110,7 +114,7 @@ export default defineConfig({
             { name: 'vendor-icons', test: /node_modules\/@phosphor-icons\// },
             {
               name: 'vendor-codecs',
-              test: /node_modules\/(@msgpack|cbor-x|bson|twilic)\//,
+              test: /node_modules\/(@msgpack|cbor-x|bson|@twilic\/core)\//,
             },
           ],
         },

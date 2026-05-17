@@ -29,7 +29,7 @@
     "cbor-x": "^1.6.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "twilic": "file:../twilic-js",
+    "@twilic/core": "file:../twilic-js",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {

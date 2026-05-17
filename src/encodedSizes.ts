@@ -1,7 +1,7 @@
 import { decode as decodeMsgpack, encode as encodeMsgpack } from '@msgpack/msgpack';
 import { deserialize as deserializeBson, serialize as serializeBson } from 'bson';
 import { decode as decodeCbor, encode as encodeCbor } from 'cbor-x';
-import { decode, encode, encodeBatch, type TwilicValue } from 'twilic/advanced';
+import { decode, encode, encodeBatch, type TwilicValue } from '@twilic/core/advanced';
 
 import type { BenchDataset } from './benchmarkPayloads.js';
 

@@ -11,7 +11,7 @@ This project always depends on a **local sibling** [`twilic-js`](https://github.
 - **Bench fixtures** — `single-small`, homogeneous and mixed **batch-256**, and **patch-session** payloads aligned with `benchmark`.
 - **Custom JSON** — paste or edit a root object `{…}` or array `[…]`; a highlighted row is added above the fixtures when the payload is valid.
 - **Size table** — byte counts per format plus percent smaller than Twilic vs MessagePack, CBOR, BSON, and JSON.
-- **WASM runtime** — encoding runs in the browser via `twilic/advanced` with `init({ prefer: 'wasm' })`; Node N-API is not bundled.
+- **WASM runtime** — encoding runs in the browser via `@twilic/core/advanced` with `init({ prefer: 'wasm' })`; Node N-API is not bundled.
 
 ## Stack
 

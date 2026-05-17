@@ -1,5 +1,5 @@
-import type { TwilicValue } from 'twilic/advanced';
-import { toCompactJson, toTransportJson } from 'twilic/advanced';
+import type { TwilicValue } from '@twilic/core/advanced';
+import { toCompactJson, toTransportJson } from '@twilic/core/advanced';
 
 function makeSingleSmallDataset(): TwilicValue {
   return {

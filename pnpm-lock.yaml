@@ -20,6 +20,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.2.4
         version: 4.2.4(vite@8.0.11(@types/node@25.6.0)(jiti@2.7.0))
+      '@twilic/core':
+        specifier: file:../twilic-js
+        version: file:../twilic-js
       bson:
         specifier: ^7.2.0
         version: 7.2.0
@@ -32,9 +35,6 @@ importers:
       react-dom:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
-      twilic:
-        specifier: file:../twilic-js
-        version: file:../twilic-js
       tailwindcss:
         specifier: ^4.2.4
         version: 4.2.4
@@ -569,6 +569,10 @@ packages:
     resolution: {integrity: sha512-pCvohwOCspk3ZFn6eJzrrX3g4n2JY73H6MmYC87XfGPyTty4YsCjYTMArRZm/zOI8dIt3+EcrLHAFPe5A4bgtw==}
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
+
+  '@twilic/core@file:../twilic-js':
+    resolution: {directory: ../twilic-js, type: directory}
+    engines: {node: '>=24'}
 
   '@tybys/wasm-util@0.10.2':
     resolution: {integrity: sha512-RoBvJ2X0wuKlWFIjrwffGw1IqZHKQqzIchKaadZZfnNpsAYp2mM0h36JtPCjNDAHGgYez/15uMBpfGwchhiMgg==}
@@ -1255,10 +1259,6 @@ packages:
     resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
     engines: {node: '>=0.10.0'}
 
-  twilic@file:../twilic-js:
-    resolution: {directory: ../twilic-js, type: directory}
-    engines: {node: '>=24'}
-
   regex-recursion@6.0.2:
     resolution: {integrity: sha512-0YCaSCq2VRIebiaUviZNs0cBz1kg5kVS2UKUfNIx8YVs1cN3AV7NTctO5FOKBA+UT2BPJIWZauYHPqJODG50cg==}
 
@@ -1919,6 +1919,8 @@ snapshots:
       tailwindcss: 4.2.4
       vite: 8.0.11(@types/node@25.6.0)(jiti@2.7.0)
 
+  '@twilic/core@file:../twilic-js': {}
+
   '@tybys/wasm-util@0.10.2':
     dependencies:
       tslib: 2.8.1
@@ -2535,8 +2537,6 @@ snapshots:
       scheduler: 0.27.0
 
   react@19.2.6: {}
-
-  twilic@file:../twilic-js: {}
 
   regex-recursion@6.0.2:
     dependencies:
