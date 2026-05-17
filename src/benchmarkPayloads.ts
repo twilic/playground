@@ -90,7 +90,7 @@ function makeBatchMixedDataset(): TwilicValue[] {
   });
 }
 
-/** Mirrors `Dataset` payloads in `twilic-bench/src/benchmark.ts`. */
+/** Mirrors `Dataset` payloads in `benchmark/src/benchmark.ts`. */
 export interface BenchDataset {
   singleSmall: TwilicValue;
   singleSmallJson: Record<string, unknown>;

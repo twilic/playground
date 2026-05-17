@@ -2,13 +2,13 @@
 
 **Suggested GitHub repository description:** Playground for testing Twilic encoding and visualizing size savings.
 
-Browser playground built with **Vite**, **React**, and [**Cloudflare Kumo**](https://kumo-ui.com/). It loads the **same fixture payloads and serialization rules** as [twilic-bench](https://github.com/twilic/twilic-bench) and compares encoded sizes for **Twilic**, **MessagePack**, **CBOR**, **BSON**, and **JSON (UTF-8)**. BSON batches use the same `{ records: [...] }` shape; “vs …” columns use the bench formula \((1 - \text{twilic}/\text{baseline}) \times 100\).
+Browser playground built with **Vite**, **React**, and [**Cloudflare Kumo**](https://kumo-ui.com/). It loads the **same fixture payloads and serialization rules** as [benchmark](https://github.com/twilic/benchmark) and compares encoded sizes for **Twilic**, **MessagePack**, **CBOR**, **BSON**, and **JSON (UTF-8)**. BSON batches use the same `{ records: [...] }` shape; “vs …” columns use the bench formula \((1 - \text{twilic}/\text{baseline}) \times 100\).
 
 This project always depends on a **local sibling** [`twilic-js`](https://github.com/twilic/twilic-js) checkout via `file:../twilic-js` (not the published npm package), so the playground tracks your latest TypeScript and WASM build.
 
 ## Features
 
-- **Bench fixtures** — `single-small`, homogeneous and mixed **batch-256**, and **patch-session** payloads aligned with `twilic-bench`.
+- **Bench fixtures** — `single-small`, homogeneous and mixed **batch-256**, and **patch-session** payloads aligned with `benchmark`.
 - **Custom JSON** — paste or edit a root object `{…}` or array `[…]`; a highlighted row is added above the fixtures when the payload is valid.
 - **Size table** — byte counts per format plus percent smaller than Twilic vs MessagePack, CBOR, BSON, and JSON.
 - **WASM runtime** — encoding runs in the browser via `twilic/advanced` with `init({ prefer: 'wasm' })`; Node N-API is not bundled.
@@ -72,7 +72,7 @@ The workflow (`.github/workflows/github-pages.yml`) checks out this repo, clones
 
 ## Bench alignment and limitations
 
-- **Encoded sizes** on the page are directly comparable to twilic-bench’s “encoded size comparison” rows (payload names match).
+- **Encoded sizes** on the page are directly comparable to benchmark’s “encoded size comparison” rows (payload names match).
 - **Throughput** (ops/s) is not shown; the benchmark suite runs in Node with **N-API** by default, while the playground uses **WASM** only, so browser timings would not match bench numbers even if measured.
 
 ## Implementation notes

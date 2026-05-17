@@ -95,7 +95,7 @@ function toSizeComparisonRow(
   };
 }
 
-/** Single object `{…}` or array `[…]` (batch), aligned with twilic-bench BSON rules. */
+/** Single object `{…}` or array `[…]` (batch), aligned with benchmark BSON rules. */
 export function measureEncodedSizesForUserPayload(
   parsed: unknown,
   payloadLabel = 'custom',
@@ -149,8 +149,8 @@ export function measureEncodedSizesForUserPayload(
 }
 
 /**
- * Produced bytes and reduction percentages aligned with twilic-bench encoded size rows
- * (`twilic-bench/src/benchmark.ts`): same serializers and BSON shapes for batches.
+ * Produced bytes and reduction percentages aligned with benchmark encoded size rows
+ * (`benchmark/src/benchmark.ts`): same serializers and BSON shapes for batches.
  */
 export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonRow[] {
   const { singleSmallJson, batchHomogeneousJson, batchMixedJson, patchSession } = dataset;
