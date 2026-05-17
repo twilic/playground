@@ -1,7 +1,7 @@
-import type { RecurramValue } from 'recurram/advanced';
-import { toCompactJson, toTransportJson } from 'recurram/advanced';
+import type { TwilicValue } from 'twilic/advanced';
+import { toCompactJson, toTransportJson } from 'twilic/advanced';
 
-function makeSingleSmallDataset(): RecurramValue {
+function makeSingleSmallDataset(): TwilicValue {
   return {
     id: 1234,
     userId: 987654,
@@ -17,7 +17,7 @@ function makeSingleSmallDataset(): RecurramValue {
   };
 }
 
-function makeBatchHomogeneousDataset(): RecurramValue[] {
+function makeBatchHomogeneousDataset(): TwilicValue[] {
   return Array.from({ length: 256 }, (_, index) => {
     const id = index + 1;
     return {
@@ -34,8 +34,8 @@ function makeBatchHomogeneousDataset(): RecurramValue[] {
   });
 }
 
-function makeBatchMixedDataset(): RecurramValue[] {
-  return Array.from({ length: 256 }, (_, index): RecurramValue => {
+function makeBatchMixedDataset(): TwilicValue[] {
+  return Array.from({ length: 256 }, (_, index): TwilicValue => {
     const id = index + 1;
     const kind = index % 4;
     if (kind === 0) {
@@ -90,18 +90,18 @@ function makeBatchMixedDataset(): RecurramValue[] {
   });
 }
 
-/** Mirrors `Dataset` payloads in `recurram-bench/src/benchmark.ts`. */
+/** Mirrors `Dataset` payloads in `twilic-bench/src/benchmark.ts`. */
 export interface BenchDataset {
-  singleSmall: RecurramValue;
+  singleSmall: TwilicValue;
   singleSmallJson: Record<string, unknown>;
-  batchHomogeneous: RecurramValue[];
+  batchHomogeneous: TwilicValue[];
   batchHomogeneousJson: unknown[];
-  batchMixed: RecurramValue[];
+  batchMixed: TwilicValue[];
   batchMixedJson: unknown[];
   patchSession: {
-    first: RecurramValue;
-    nextA: RecurramValue;
-    nextB: RecurramValue;
+    first: TwilicValue;
+    nextA: TwilicValue;
+    nextB: TwilicValue;
     firstTransport: string;
     nextATransport: string;
     nextBTransport: string;
@@ -116,7 +116,7 @@ export function buildBenchDataset(): BenchDataset {
   const batchHomogeneous = makeBatchHomogeneousDataset();
   const batchMixed = makeBatchMixedDataset();
 
-  const patchSessionFirst: RecurramValue = {
+  const patchSessionFirst: TwilicValue = {
     id: 9001,
     status: 'active',
     score: 99.1,
@@ -126,7 +126,7 @@ export function buildBenchDataset(): BenchDataset {
       timeZone: 'Asia/Tokyo',
     },
   };
-  const patchSessionNextA: RecurramValue = {
+  const patchSessionNextA: TwilicValue = {
     id: 9001,
     status: 'active',
     score: 99.2,
@@ -136,7 +136,7 @@ export function buildBenchDataset(): BenchDataset {
       timeZone: 'Asia/Seoul',
     },
   };
-  const patchSessionNextB: RecurramValue = {
+  const patchSessionNextB: TwilicValue = {
     id: 9001,
     status: 'active',
     score: 99.3,

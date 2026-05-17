@@ -1,12 +1,12 @@
 /**
- * Browser build of `recurram` backend bootstrap: WASM only, no N-API preloading /
- * bundled `.node` assets (see recurram-js `dist/backend.js`).
+ * Browser build of `twilic` backend bootstrap: WASM only, no N-API preloading /
+ * bundled `.node` assets (see twilic-js `dist/backend.js`).
  */
-import type { InitOptions } from '../../../recurram-js/dist/types.js';
-import type { RuntimeBackend, RuntimeKind } from '../../../recurram-js/dist/runtime/types.js';
+import type { InitOptions } from '../../../twilic-js/dist/types.js';
+import type { RuntimeBackend, RuntimeKind } from '../../../twilic-js/dist/runtime/types.js';
 
-import { loadNodeBackend } from './recurram-node-backend.js';
-import { loadWasmBackend } from './recurram-wasm-backend.js';
+import { loadNodeBackend } from './twilic-node-backend.js';
+import { loadWasmBackend } from './twilic-wasm-backend.js';
 
 let backend: RuntimeBackend | null = null;
 let initPromise: Promise<RuntimeBackend> | null = null;
@@ -31,7 +31,7 @@ export function requireBackend(): RuntimeBackend {
   }
 
   throw new Error(
-    'recurram is not initialized. Call await init() before encode/decode in browser runtimes.',
+    'twilic is not initialized. Call await init() before encode/decode in browser runtimes.',
   );
 }
 

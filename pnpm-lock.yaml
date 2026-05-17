@@ -32,9 +32,9 @@ importers:
       react-dom:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
-      recurram:
-        specifier: file:../recurram-js
-        version: file:../recurram-js
+      twilic:
+        specifier: file:../twilic-js
+        version: file:../twilic-js
       tailwindcss:
         specifier: ^4.2.4
         version: 4.2.4
@@ -1255,8 +1255,8 @@ packages:
     resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
     engines: {node: '>=0.10.0'}
 
-  recurram@file:../recurram-js:
-    resolution: {directory: ../recurram-js, type: directory}
+  twilic@file:../twilic-js:
+    resolution: {directory: ../twilic-js, type: directory}
     engines: {node: '>=24'}
 
   regex-recursion@6.0.2:
@@ -2536,7 +2536,7 @@ snapshots:
 
   react@19.2.6: {}
 
-  recurram@file:../recurram-js: {}
+  twilic@file:../twilic-js: {}
 
   regex-recursion@6.0.2:
     dependencies:

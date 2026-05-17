@@ -2,7 +2,7 @@ import type {
   RuntimeBackend,
   RuntimeSessionEncoder,
   TransportValueObj,
-} from '../../../recurram-js/dist/runtime/types.js';
+} from '../../../twilic-js/dist/runtime/types.js';
 
 interface WasmSessionEncoder {
   encodeTransportJson(valueJson: string): Uint8Array;
@@ -28,7 +28,7 @@ interface WasmModule {
  * tree raw from `/public` (MIME / module graph breaks under `pnpm preview`).
  */
 export async function loadWasmBackend(wasmInput?: unknown): Promise<RuntimeBackend> {
-  const wasm = (await import('../../wasm/pkg/recurram_wasm.js')) as unknown as WasmModule;
+  const wasm = (await import('../../wasm/pkg/twilic_wasm.js')) as unknown as WasmModule;
 
   if (typeof wasm.default === 'function') {
     await wasm.default(wasmInput);

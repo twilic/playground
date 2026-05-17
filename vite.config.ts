@@ -7,23 +7,23 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 
 const playgroundDir = path.dirname(fileURLToPath(import.meta.url));
-const recurramJsRoot = path.resolve(playgroundDir, '..', 'recurram-js');
-const wasmPkgSource = path.join(recurramJsRoot, 'wasm', 'pkg');
+const twilicJsRoot = path.resolve(playgroundDir, '..', 'twilic-js');
+const wasmPkgSource = path.join(twilicJsRoot, 'wasm', 'pkg');
 
 /**
  * Copies built wasm-bindgen output **into this repo** so Vite/Rolldown can resolve
- * `import '*.wasm'` (sibling-package paths under `../recurram-js` fail during build).
- * Not committed (see `.gitignore`). Still uses your local recurram-js build output.
+ * `import '*.wasm'` (sibling-package paths under `../twilic-js` fail during build).
+ * Not committed (see `.gitignore`). Still uses your local twilic-js build output.
  */
-function syncRecurramWasmIntoWorkspace(): Plugin {
+function syncTwilicWasmIntoWorkspace(): Plugin {
   const wasmPkgDest = path.join(playgroundDir, 'wasm', 'pkg');
 
   return {
-    name: 'sync-recurram-wasm-workspace-copy',
+    name: 'sync-twilic-wasm-workspace-copy',
     buildStart() {
       if (!fs.existsSync(wasmPkgSource)) {
         throw new Error(
-          `[playground] Missing ${wasmPkgSource}. Run pnpm build:wasm in recurram-js (see README).`,
+          `[playground] Missing ${wasmPkgSource}. Run pnpm build:wasm in twilic-js (see README).`,
         );
       }
       fs.mkdirSync(wasmPkgDest, { recursive: true });
@@ -45,19 +45,19 @@ function pagesBase(): string {
 }
 
 /** Force browser shims so we do not bundle Node-only N-API loaders or `.node` binaries. */
-function recurramBackendAliases(): Plugin {
-  const stubNode = path.join(playgroundDir, 'src', 'shims', 'recurram-node-backend.ts');
-  const stubWasm = path.join(playgroundDir, 'src', 'shims', 'recurram-wasm-backend.ts');
+function twilicBackendAliases(): Plugin {
+  const stubNode = path.join(playgroundDir, 'src', 'shims', 'twilic-node-backend.ts');
+  const stubWasm = path.join(playgroundDir, 'src', 'shims', 'twilic-wasm-backend.ts');
 
   return {
-    name: 'recurram-backend-aliases',
+    name: 'twilic-backend-aliases',
     enforce: 'pre',
     resolveId(source, importer) {
-      const fromRecurram = importer?.includes(`${path.sep}recurram${path.sep}`) ?? false;
+      const fromTwilic = importer?.includes(`${path.sep}twilic${path.sep}`) ?? false;
       if (
-        !fromRecurram &&
-        !source.includes(`${path.sep}recurram${path.sep}`) &&
-        !source.includes('/recurram/')
+        !fromTwilic &&
+        !source.includes(`${path.sep}twilic${path.sep}`) &&
+        !source.includes('/twilic/')
       ) {
         return null;
       }
@@ -65,11 +65,11 @@ function recurramBackendAliases(): Plugin {
       if (source === './backend.js') {
         const norm = importer?.replaceAll('\\', '/') ?? '';
         if (
-          norm.includes('/recurram/') &&
+          norm.includes('/twilic/') &&
           norm.includes('/dist/') &&
           /[/](index|advanced)\.js$/.test(norm)
         ) {
-          return path.join(playgroundDir, 'src', 'shims', 'recurram-backend.ts');
+          return path.join(playgroundDir, 'src', 'shims', 'twilic-backend.ts');
         }
       }
 
@@ -98,7 +98,7 @@ function recurramBackendAliases(): Plugin {
 export default defineConfig({
   /** Wasm-pack `--target bundler`; required for Rolldown to load sibling `*.wasm` imports. */
   assetsInclude: ['**/*.wasm'],
-  plugins: [syncRecurramWasmIntoWorkspace(), recurramBackendAliases(), react(), tailwindcss()],
+  plugins: [syncTwilicWasmIntoWorkspace(), twilicBackendAliases(), react(), tailwindcss()],
   base: pagesBase(),
   build: {
     rolldownOptions: {
@@ -110,7 +110,7 @@ export default defineConfig({
             { name: 'vendor-icons', test: /node_modules\/@phosphor-icons\// },
             {
               name: 'vendor-codecs',
-              test: /node_modules\/(@msgpack|cbor-x|bson|recurram)\//,
+              test: /node_modules\/(@msgpack|cbor-x|bson|twilic)\//,
             },
           ],
         },

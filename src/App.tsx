@@ -16,9 +16,9 @@ import {
   sanityCheckDecodes,
   type SizeComparisonRow,
 } from './encodedSizes.js';
-import { init } from 'recurram/advanced';
+import { init } from 'twilic/advanced';
 
-type RecurramRuntime = Awaited<ReturnType<typeof init>>;
+type TwilicRuntime = Awaited<ReturnType<typeof init>>;
 
 function formatBytes(bytes: number): string {
   return bytes.toLocaleString('en-US');
@@ -33,7 +33,7 @@ function formatPct(value: number): string {
 
 export default function App() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [runtime, setRuntime] = useState<RecurramRuntime | null>(null);
+  const [runtime, setRuntime] = useState<TwilicRuntime | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fixtureRows, setFixtureRows] = useState<SizeComparisonRow[]>([]);
 
@@ -123,11 +123,11 @@ export default function App() {
           <Text variant="secondary" as="p">
             Compare encoded sizes with{' '}
             <Link
-              href="https://github.com/recurram/recurram-bench"
+              href="https://github.com/twilic/twilic-bench"
               target="_blank"
               rel="noreferrer"
             >
-              recurram-bench
+              twilic-bench
             </Link>{' '}
             rules. Uses local
           </Text>
@@ -152,7 +152,7 @@ export default function App() {
                     {errorMessage}
                     <br />
                     <Text variant="mono-secondary" as="span">
-                      Build ../recurram-js with pnpm build:wasm && pnpm build:ts
+                      Build ../twilic-js with pnpm build:wasm && pnpm build:ts
                     </Text>
                   </>
                 }
@@ -246,7 +246,7 @@ export default function App() {
                   <Table.Header>
                     <Table.Row>
                       <Table.Head>Payload</Table.Head>
-                      <Table.Head className="text-right">Recurram</Table.Head>
+                      <Table.Head className="text-right">Twilic</Table.Head>
                       <Table.Head className="text-right">MsgPack</Table.Head>
                       <Table.Head className="text-right">CBOR</Table.Head>
                       <Table.Head className="text-right">BSON</Table.Head>
@@ -272,7 +272,7 @@ export default function App() {
                           </Table.Cell>
                           <Table.Cell className="text-right tabular-nums">
                             <Text bold size="sm" as="span">
-                              {formatBytes(row.recurram)}
+                              {formatBytes(row.twilic)}
                             </Text>
                           </Table.Cell>
                           <Table.Cell className="text-right tabular-nums">
@@ -324,7 +324,7 @@ export default function App() {
             </LayerCard>
 
             <Text variant="secondary" size="sm" as="p">
-              Bytes per format. &ldquo;vs *&rdquo; = percent smaller than Recurram. Your row is
+              Bytes per format. &ldquo;vs *&rdquo; = percent smaller than Twilic. Your row is
               highlighted when valid.
             </Text>
           </>

@@ -1,15 +1,15 @@
 {
-  "name": "@recurram/playground",
+  "name": "@twilic/playground",
   "private": true,
   "version": "0.0.0",
-  "description": "Playground for testing Recurram encoding and visualizing size savings.",
+  "description": "Playground for testing Twilic encoding and visualizing size savings.",
   "type": "module",
   "packageManager": "pnpm@10.18.1",
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "sync-wasm": "node scripts/sync-recurram-wasm.mjs",
+    "sync-wasm": "node scripts/sync-twilic-wasm.mjs",
     "predev": "pnpm sync-wasm",
     "prebuild": "pnpm sync-wasm",
     "dev": "vite",
@@ -29,7 +29,7 @@
     "cbor-x": "^1.6.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "recurram": "file:../recurram-js",
+    "twilic": "file:../twilic-js",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {

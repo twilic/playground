@@ -1,13 +1,13 @@
 import { decode as decodeMsgpack, encode as encodeMsgpack } from '@msgpack/msgpack';
 import { deserialize as deserializeBson, serialize as serializeBson } from 'bson';
 import { decode as decodeCbor, encode as encodeCbor } from 'cbor-x';
-import { decode, encode, encodeBatch, type RecurramValue } from 'recurram/advanced';
+import { decode, encode, encodeBatch, type TwilicValue } from 'twilic/advanced';
 
 import type { BenchDataset } from './benchmarkPayloads.js';
 
 export interface SizeComparisonRow {
   payload: string;
-  recurram: number;
+  twilic: number;
   msgpack: number;
   cbor: number;
   bson: number;
@@ -55,7 +55,7 @@ function normalizeBenchValue(value: unknown): unknown {
   return out;
 }
 
-function recurramRoundTripLooksEqual(original: unknown, decoded: unknown): boolean {
+function twilicRoundTripLooksEqual(original: unknown, decoded: unknown): boolean {
   return (
     JSON.stringify(normalizeBenchValue(original)) === JSON.stringify(normalizeBenchValue(decoded))
   );
@@ -70,20 +70,20 @@ function pctSmallerVersus(smaller: number, larger: number): number {
 
 function toSizeComparisonRow(
   payload: string,
-  recurram: number,
+  twilic: number,
   msgpack: Uint8Array,
   cbor: Uint8Array,
   bson: Uint8Array,
   jsonSize: number,
 ): SizeComparisonRow {
-  const rr = recurram;
+  const rr = twilic;
   const m = msgpack.byteLength;
   const c = cbor.byteLength;
   const b = bson.byteLength;
   const j = jsonSize;
   return {
     payload,
-    recurram: rr,
+    twilic: rr,
     msgpack: m,
     cbor: c,
     bson: b,
@@ -95,7 +95,7 @@ function toSizeComparisonRow(
   };
 }
 
-/** Single object `{…}` or array `[…]` (batch), aligned with recurram-bench BSON rules. */
+/** Single object `{…}` or array `[…]` (batch), aligned with twilic-bench BSON rules. */
 export function measureEncodedSizesForUserPayload(
   parsed: unknown,
   payloadLabel = 'custom',
@@ -118,14 +118,14 @@ export function measureEncodedSizesForUserPayload(
   }
 
   if (Array.isArray(parsed)) {
-    const recurramEncoded = encodeBatch(parsed as RecurramValue[]);
+    const twilicEncoded = encodeBatch(parsed as TwilicValue[]);
     const bsonEncoded = serializeBson({ records: parsed });
     const msgpackEncoded = encodeMsgpack(parsed);
     const cborEncoded = encodeCbor(parsed);
     const label = `${payloadLabel} (batch, ${parsed.length} values)`;
     return toSizeComparisonRow(
       label,
-      recurramEncoded.byteLength,
+      twilicEncoded.byteLength,
       msgpackEncoded,
       cborEncoded,
       bsonEncoded,
@@ -133,14 +133,14 @@ export function measureEncodedSizesForUserPayload(
     );
   }
 
-  const recurramEncoded = encode(parsed as RecurramValue);
+  const twilicEncoded = encode(parsed as TwilicValue);
   const rec = parsed as Record<string, unknown>;
   const msgpackEncoded = encodeMsgpack(rec);
   const cborEncoded = encodeCbor(rec);
   const bsonEncoded = serializeBson(rec);
   return toSizeComparisonRow(
     payloadLabel,
-    recurramEncoded.byteLength,
+    twilicEncoded.byteLength,
     msgpackEncoded,
     cborEncoded,
     bsonEncoded,
@@ -149,16 +149,16 @@ export function measureEncodedSizesForUserPayload(
 }
 
 /**
- * Produced bytes and reduction percentages aligned with recurram-bench encoded size rows
- * (`recurram-bench/src/benchmark.ts`): same serializers and BSON shapes for batches.
+ * Produced bytes and reduction percentages aligned with twilic-bench encoded size rows
+ * (`twilic-bench/src/benchmark.ts`): same serializers and BSON shapes for batches.
  */
 export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonRow[] {
   const { singleSmallJson, batchHomogeneousJson, batchMixedJson, patchSession } = dataset;
 
-  const recurramEncodedSingle = encode(dataset.singleSmall);
-  const recurramEncodedBatchHomogeneous = encodeBatch(dataset.batchHomogeneous);
-  const recurramEncodedBatchMixed = encodeBatch(dataset.batchMixed);
-  const recurramEncodedPatchSessionFirst = encode(patchSession.first);
+  const twilicEncodedSingle = encode(dataset.singleSmall);
+  const twilicEncodedBatchHomogeneous = encodeBatch(dataset.batchHomogeneous);
+  const twilicEncodedBatchMixed = encodeBatch(dataset.batchMixed);
+  const twilicEncodedPatchSessionFirst = encode(patchSession.first);
 
   const jsonEncodedSingle = jsonBytes(singleSmallJson);
   const jsonEncodedBatchHomogeneous = jsonBytes(batchHomogeneousJson);
@@ -180,7 +180,7 @@ export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonR
 
   const rawRows: Array<{
     payload: string;
-    recurram: number;
+    twilic: number;
     msgpack: Uint8Array;
     cbor: Uint8Array;
     bson: Uint8Array;
@@ -188,7 +188,7 @@ export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonR
   }> = [
     {
       payload: 'single-small',
-      recurram: recurramEncodedSingle.byteLength,
+      twilic: twilicEncodedSingle.byteLength,
       msgpack: msgpackEncodedSingle,
       cbor: cborEncodedSingle,
       bson: bsonEncodedSingle,
@@ -196,7 +196,7 @@ export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonR
     },
     {
       payload: 'batch-homogeneous-256',
-      recurram: recurramEncodedBatchHomogeneous.byteLength,
+      twilic: twilicEncodedBatchHomogeneous.byteLength,
       msgpack: msgpackEncodedBatchHomogeneous,
       cbor: cborEncodedBatchHomogeneous,
       bson: bsonEncodedBatchHomogeneous,
@@ -204,7 +204,7 @@ export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonR
     },
     {
       payload: 'batch-mixed-256',
-      recurram: recurramEncodedBatchMixed.byteLength,
+      twilic: twilicEncodedBatchMixed.byteLength,
       msgpack: msgpackEncodedBatchMixed,
       cbor: cborEncodedBatchMixed,
       bson: bsonEncodedBatchMixed,
@@ -212,7 +212,7 @@ export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonR
     },
     {
       payload: 'session-patch-hot (first)',
-      recurram: recurramEncodedPatchSessionFirst.byteLength,
+      twilic: twilicEncodedPatchSessionFirst.byteLength,
       msgpack: encodeMsgpack(patchSession.first as Record<string, unknown>),
       cbor: encodeCbor(patchSession.first as Record<string, unknown>),
       bson: serializeBson(patchSession.first as Record<string, unknown>),
@@ -221,19 +221,19 @@ export function measureBenchEncodedSizes(dataset: BenchDataset): SizeComparisonR
   ];
 
   return rawRows.map((row) =>
-    toSizeComparisonRow(row.payload, row.recurram, row.msgpack, row.cbor, row.bson, row.json),
+    toSizeComparisonRow(row.payload, row.twilic, row.msgpack, row.cbor, row.bson, row.json),
   );
 }
 
 /** Verify round-trip for the payloads used in comparison (helps catch toolchain drift). */
 export function sanityCheckDecodes(dataset: BenchDataset): void {
-  const reEnc = (v: RecurramValue) => encode(v);
+  const reEnc = (v: TwilicValue) => encode(v);
   const reDec = (u: Uint8Array) => decode(u);
 
-  const check = (label: string, value: RecurramValue) => {
+  const check = (label: string, value: TwilicValue) => {
     const back = reDec(reEnc(value));
-    if (!recurramRoundTripLooksEqual(value, back)) {
-      throw new Error(`recurram round-trip mismatch: ${label}`);
+    if (!twilicRoundTripLooksEqual(value, back)) {
+      throw new Error(`twilic round-trip mismatch: ${label}`);
     }
   };
 
