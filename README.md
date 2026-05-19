@@ -2,7 +2,12 @@
 
 **Suggested GitHub repository description:** Playground for testing Twilic encoding and visualizing size savings.
 
-Browser playground built with **Vite**, **React**, and [**Cloudflare Kumo**](https://kumo-ui.com/). It loads the **same fixture payloads and serialization rules** as [benchmark](https://github.com/twilic/benchmark) and compares encoded sizes for **Twilic**, **MessagePack**, **CBOR**, **BSON**, and **JSON (UTF-8)**. BSON batches use the same `{ records: [...] }` shape; “vs …” columns use the bench formula \((1 - \text{twilic}/\text{baseline}) \times 100\).
+Browser playground built with **Vite**, **React**, and [**Cloudflare Kumo**](https://kumo-ui.com/). Two views:
+
+1. **Encoded sizes** — same fixture payloads and serialization rules as [benchmark](https://github.com/twilic/benchmark); compares **Twilic**, **MessagePack**, **CBOR**, **BSON**, and **JSON (UTF-8)**.
+2. **Schema-first** — compares Twilic Bound profile (`encodeWithSchema`) with **Protobuf**, **Avro**, **FlatBuffers**, and **Apache Arrow IPC** (plus schema-less Twilic) on [schema-example.json](https://github.com/twilic/twilic/blob/main/examples/schema-example.json) style records.
+
+BSON batches use the same `{ records: [...] }` shape; “vs …” columns use the bench formula \((1 - \text{twilic}/\text{baseline}) \times 100\).
 
 This project always depends on a **local sibling** [`twilic-js`](https://github.com/twilic/twilic-js) checkout via `file:../twilic-js` (not the published npm package), so the playground tracks your latest TypeScript and WASM build.
 
@@ -11,16 +16,17 @@ This project always depends on a **local sibling** [`twilic-js`](https://github.
 - **Bench fixtures** — `single-small`, homogeneous and mixed **batch-256**, and **patch-session** payloads aligned with `benchmark`.
 - **Custom JSON** — paste or edit a root object `{…}` or array `[…]`; a highlighted row is added above the fixtures when the payload is valid.
 - **Size table** — byte counts per format plus percent smaller than Twilic vs MessagePack, CBOR, BSON, and JSON.
+- **Schema-first table** — `UserRecordV1` fixtures (×1, ×3 from schema-example, ×256 homogeneous); Twilic bound/dynamic; per-codec **stream** (concatenated messages) and **pack** (Protobuf repeated, Avro OCF, FlatBuffers vector, Arrow IPC).
 - **WASM runtime** — encoding runs in the browser via `@twilic/core/advanced` with `init({ prefer: 'wasm' })`; Node N-API is not bundled.
 
 ## Stack
 
-| Layer             | Choice                                                                                 |
-| ----------------- | -------------------------------------------------------------------------------------- |
-| UI                | [@cloudflare/kumo](https://kumo-ui.com/) + [Tailwind CSS v4](https://tailwindcss.com/) |
-| App               | React 19, TypeScript, Vite 8 (Rolldown)                                                |
-| Encoding          | Local `twilic-js` (WASM)                                                               |
-| Comparison codecs | `@msgpack/msgpack`, `cbor-x`, `bson`                                                   |
+| Layer             | Choice                                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------ |
+| UI                | [@cloudflare/kumo](https://kumo-ui.com/) + [Tailwind CSS v4](https://tailwindcss.com/)                 |
+| App               | React 19, TypeScript, Vite 8 (Rolldown)                                                                |
+| Encoding          | Local `twilic-js` (WASM)                                                                               |
+| Comparison codecs | `@msgpack/msgpack`, `cbor-x`, `bson`; schema page: `protobufjs`, `avsc`, `flatbuffers`, `apache-arrow` |
 
 ## Prerequisites
 
@@ -81,6 +87,7 @@ The workflow (`.github/workflows/github-pages.yml`) checks out this repo, clones
 - **`vite.config.ts`** sets **`assetsInclude`** for `*.wasm` so Rolldown can bundle wasm-pack’s `import '*.wasm'`. Without bundling, serving raw bindings from `/public` often breaks under **`pnpm preview`** (MIME / module errors in Chromium).
 - **`build.rolldownOptions.output.codeSplitting`** splits vendor chunks (React, Kumo, codecs) to keep the main bundle under Vite’s size warning threshold.
 - **`src/shims/`** substitutes browser-safe backends so the client bundle excludes Node-only N-API loaders and `.node` binaries.
+- WASM loads via `twilic_wasm_bg.wasm?url` + manual `instantiateStreaming` with `{ './twilic_wasm_bg.js': glue }` (not `twilic_wasm.js` or bare `?init`): Rolldown/`?init` omit wasm-bindgen JS imports and break initialization.
 
 ## License
 

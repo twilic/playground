@@ -103,6 +103,14 @@ export default defineConfig({
   /** Wasm-pack `--target bundler`; required for Rolldown to load sibling `*.wasm` imports. */
   assetsInclude: ['**/*.wasm'],
   plugins: [syncTwilicWasmIntoWorkspace(), twilicBackendAliases(), react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@twilic/wasm-glue': path.join(playgroundDir, 'wasm', 'pkg', 'twilic_wasm_bg.js'),
+      // Bundle `util` instead of Rolldown's empty browser external (avsc needs debuglog/format).
+      util: path.join(playgroundDir, 'src', 'shims', 'node-util.ts'),
+      avsc: path.join(playgroundDir, 'node_modules/avsc/etc/browser/avsc-types.js'),
+    },
+  },
   base: pagesBase(),
   build: {
     rolldownOptions: {
@@ -114,7 +122,7 @@ export default defineConfig({
             { name: 'vendor-icons', test: /node_modules\/@phosphor-icons\// },
             {
               name: 'vendor-codecs',
-              test: /node_modules\/(@msgpack|cbor-x|bson|@twilic\/core)\//,
+              test: /node_modules\/(@msgpack|cbor-x|bson|protobufjs|avsc|flatbuffers|apache-arrow|@twilic\/core)\//,
             },
           ],
         },

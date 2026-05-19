@@ -1,0 +1,14 @@
+namespace twilic.playground;
+
+table UserRecordV1 {
+  id: uint32;
+  role: string;
+  age: uint8 = 0;
+  active: bool;
+}
+
+table UserRecordList {
+  records: [UserRecordV1];
+}
+
+root_type UserRecordList;
