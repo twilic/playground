@@ -53,34 +53,34 @@ export async function loadWasmBackend(wasmInput?: unknown): Promise<RuntimeBacke
   };
 }
 
-function buildGlueImports(): WebAssembly.ModuleImports {
-  // wasm-bindgen imports (see twilic_wasm_bg.wasm). Read each export from the glue
-  // namespace so Rolldown getter wrappers are unwrapped before passing to WASM.
-  return {
-    __wbindgen_object_drop_ref: wasmGlue.__wbindgen_object_drop_ref,
-    __wbg_getRandomValues_3f44b700395062e5: wasmGlue.__wbg_getRandomValues_3f44b700395062e5,
-    __wbg___wbindgen_throw_6b64449b9b9ed33c: wasmGlue.__wbg___wbindgen_throw_6b64449b9b9ed33c,
-    __wbindgen_cast_0000000000000001: wasmGlue.__wbindgen_cast_0000000000000001,
-  };
+function buildGlueImports(wasmBytes: ArrayBuffer): WebAssembly.ModuleImports {
+  // wasm-bindgen hashes suffixes per build; never hardcode them (CI vs local drift breaks Pages).
+  const module = new WebAssembly.Module(wasmBytes);
+  const glue: WebAssembly.ModuleImports = {};
+
+  for (const imp of WebAssembly.Module.imports(module)) {
+    if (imp.module !== WASM_GLUE_MODULE || imp.kind !== 'function') {
+      continue;
+    }
+    const fn = (wasmGlue as Record<string, unknown>)[imp.name];
+    if (typeof fn !== 'function') {
+      throw new Error(
+        `Missing wasm-bindgen glue export "${imp.name}". Run pnpm build:wasm in twilic-js, then pnpm build here.`,
+      );
+    }
+    glue[imp.name] = fn as WebAssembly.ImportValue;
+  }
+
+  return glue;
 }
 
 async function instantiateTwilicWasm(): Promise<WebAssembly.Exports> {
+  const response = await fetch(wasmUrl);
+  const bytes = await response.arrayBuffer();
   const imports: WebAssembly.Imports = {
-    [WASM_GLUE_MODULE]: buildGlueImports(),
+    [WASM_GLUE_MODULE]: buildGlueImports(bytes),
   };
 
-  const response = await fetch(wasmUrl);
-  const contentType = response.headers.get('Content-Type') ?? '';
-
-  if (
-    typeof WebAssembly.instantiateStreaming === 'function' &&
-    contentType.startsWith('application/wasm')
-  ) {
-    const { instance } = await WebAssembly.instantiateStreaming(response, imports);
-    return instance.exports;
-  }
-
-  const bytes = await response.arrayBuffer();
   const { instance } = await WebAssembly.instantiate(bytes, imports);
   return instance.exports;
 }

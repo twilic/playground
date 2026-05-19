@@ -114,6 +114,10 @@ export default defineConfig({
   base: pagesBase(),
   build: {
     rolldownOptions: {
+      treeshake: {
+        // wasm-bindgen glue shims are resolved dynamically from WebAssembly.Module.imports.
+        moduleSideEffects: (id) => id.replaceAll('\\', '/').includes('/twilic_wasm_bg.js'),
+      },
       output: {
         codeSplitting: {
           groups: [
