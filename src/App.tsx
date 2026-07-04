@@ -48,11 +48,33 @@ const pageCopy: Record<PlaygroundPageId, { title: string; description: ReactNode
   },
 };
 
+// helper
+function getPageFromUrl(): PlaygroundPageId {
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get('page');
+
+  if (page === 'sizes' || page === 'schema') {
+    return page;
+  }
+
+  return 'sizes';
+}
+
 export default function App() {
-  const [activePage, setActivePage] = useState<PlaygroundPageId>('sizes');
+  const [activePage, setActivePage] = useState<PlaygroundPageId>(() => getPageFromUrl());
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [runtime, setRuntime] = useState<TwilicRuntime | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleNavigate = (page: PlaygroundPageId) => {
+    setActivePage(page);
+
+    const url = new URL(window.location.href);
+
+    url.searchParams.set('page', page);
+
+    window.history.pushState(window.history.state, '', url.toString());
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -79,12 +101,24 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      setActivePage(getPageFromUrl());
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
   const copy = pageCopy[activePage];
 
   return (
     <PlaygroundLayout
       activePage={activePage}
-      onNavigate={setActivePage}
+      onNavigate={handleNavigate}
       status={status}
       runtime={runtime}
       errorMessage={errorMessage}
