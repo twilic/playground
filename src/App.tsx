@@ -3,12 +3,12 @@ import { Link } from '@cloudflare/kumo/components/link';
 import { Text } from '@cloudflare/kumo/components/text';
 import { init } from '@twilic/core/advanced';
 
+import { PlaygroundLayout } from './PlaygroundLayout.js';
 import {
   isPlaygroundPageId,
-  PlaygroundLayout,
   PLAYGROUND_PAGE_IDS,
   type PlaygroundPageId,
-} from './PlaygroundLayout.js';
+} from './playground-pages.js';
 import { SchemaComparisonPage } from './SchemaComparisonPage.js';
 import { SizeComparisonPage } from './SizeComparisonPage.js';
 
