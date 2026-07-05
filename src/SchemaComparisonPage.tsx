@@ -79,9 +79,12 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
 
   if (measureError) {
     return (
-      <Banner variant="error" icon={<WarningCircleIcon />} title="Measurement failed">
-        {measureError}
-      </Banner>
+      <Banner
+        icon={<WarningCircleIcon weight="fill" />}
+        variant="error"
+        title="Measurement failed"
+        description={measureError}
+      />
     );
   }
 
