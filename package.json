@@ -15,7 +15,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --test --experimental-strip-types src/**/*.test.ts",
+    "test": "vitest run --config vitest.config.ts",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -54,6 +54,7 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.59.2",
-    "vite": "^8.0.11"
+    "vite": "^8.0.11",
+    "vitest": "^4.0.15"
   }
 }
