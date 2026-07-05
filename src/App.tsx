@@ -3,7 +3,12 @@ import { Link } from '@cloudflare/kumo/components/link';
 import { Text } from '@cloudflare/kumo/components/text';
 import { init } from '@twilic/core/advanced';
 
-import { PlaygroundLayout, type PlaygroundPageId } from './PlaygroundLayout.js';
+import {
+  isPlaygroundPageId,
+  PlaygroundLayout,
+  PLAYGROUND_PAGE_IDS,
+  type PlaygroundPageId,
+} from './PlaygroundLayout.js';
 import { SchemaComparisonPage } from './SchemaComparisonPage.js';
 import { SizeComparisonPage } from './SizeComparisonPage.js';
 
@@ -48,16 +53,14 @@ const pageCopy: Record<PlaygroundPageId, { title: string; description: ReactNode
   },
 };
 
-// helper
 function getPageFromUrl(): PlaygroundPageId {
-  const params = new URLSearchParams(window.location.search);
-  const page = params.get('page');
+  const page = new URLSearchParams(window.location.search).get('page');
 
-  if (page === 'sizes' || page === 'schema') {
+  if (isPlaygroundPageId(page)) {
     return page;
   }
 
-  return 'sizes';
+  return PLAYGROUND_PAGE_IDS[0];
 }
 
 export default function App() {
