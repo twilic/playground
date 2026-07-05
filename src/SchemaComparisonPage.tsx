@@ -77,17 +77,13 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
     );
   }
 
- if (measureError) {
-  return (
-    <Banner
-      variant="error"
-      icon={<WarningCircleIcon />}
-      title="Measurement failed"
-    >
-      {measureError}
-    </Banner>
-  );
-}
+  if (measureError) {
+    return (
+      <Banner variant="error" icon={<WarningCircleIcon />} title="Measurement failed">
+        {measureError}
+      </Banner>
+    );
+  }
 
   if (rows.length === 0) {
     return null;
