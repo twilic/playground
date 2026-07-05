@@ -5,6 +5,9 @@ import { Loader } from '@cloudflare/kumo/components/loader';
 import { Table } from '@cloudflare/kumo/components/table';
 import { Text } from '@cloudflare/kumo/components/text';
 
+import { Banner } from '@cloudflare/kumo/components/banner';
+import { WarningCircleIcon } from '@phosphor-icons/react';
+
 import { buildSchemaBenchScenarios } from './schemaComparison/fixtures.js';
 import {
   measureAllSchemaScenarios,
@@ -76,9 +79,12 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
 
   if (measureError) {
     return (
-      <Text variant="secondary" as="p">
-        Measurement failed: {measureError}
-      </Text>
+      <Banner
+        icon={<WarningCircleIcon weight="fill" />}
+        variant="error"
+        title="Measurement failed"
+        description={measureError}
+      />
     );
   }
 
