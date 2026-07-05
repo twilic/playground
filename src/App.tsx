@@ -3,7 +3,12 @@ import { Link } from '@cloudflare/kumo/components/link';
 import { Text } from '@cloudflare/kumo/components/text';
 import { init } from '@twilic/core/advanced';
 
-import { PlaygroundLayout, type PlaygroundPageId } from './PlaygroundLayout.js';
+import {
+  isPlaygroundPageId,
+  PlaygroundLayout,
+  PLAYGROUND_PAGE_IDS,
+  type PlaygroundPageId,
+} from './PlaygroundLayout.js';
 import { SchemaComparisonPage } from './SchemaComparisonPage.js';
 import { SizeComparisonPage } from './SizeComparisonPage.js';
 
@@ -48,11 +53,35 @@ const pageCopy: Record<PlaygroundPageId, { title: string; description: ReactNode
   },
 };
 
+function getPageFromUrl(): PlaygroundPageId {
+  const page = new URLSearchParams(window.location.search).get('page');
+
+  if (isPlaygroundPageId(page)) {
+    return page;
+  }
+
+  return PLAYGROUND_PAGE_IDS[0];
+}
+
 export default function App() {
-  const [activePage, setActivePage] = useState<PlaygroundPageId>('sizes');
+  const [activePage, setActivePage] = useState<PlaygroundPageId>(() => getPageFromUrl());
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [runtime, setRuntime] = useState<TwilicRuntime | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleNavigate = (page: PlaygroundPageId) => {
+    if (page === activePage) {
+      return;
+    }
+
+    setActivePage(page);
+
+    const url = new URL(window.location.href);
+
+    url.searchParams.set('page', page);
+
+    window.history.pushState(window.history.state, '', url.toString());
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -79,12 +108,24 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      setActivePage(getPageFromUrl());
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
   const copy = pageCopy[activePage];
 
   return (
     <PlaygroundLayout
       activePage={activePage}
-      onNavigate={setActivePage}
+      onNavigate={handleNavigate}
       status={status}
       runtime={runtime}
       errorMessage={errorMessage}
