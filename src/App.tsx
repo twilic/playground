@@ -70,6 +70,10 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleNavigate = (page: PlaygroundPageId) => {
+    if (page === activePage) {
+      return;
+    }
+
     setActivePage(page);
 
     const url = new URL(window.location.href);
