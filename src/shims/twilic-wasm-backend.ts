@@ -10,7 +10,9 @@ import {
   __wbg_set_wasm,
   createSessionEncoder as wasmCreateSessionEncoder,
   decodeToTransportJson,
+  encodeBatchWithSchemaTransportJson,
   encodeBatchTransportJson,
+  encodeBoundStreamTransportJson,
   encodeTransportJson,
   encodeWithSchemaTransportJson,
   type SessionEncoder as WasmSessionEncoder,
@@ -41,6 +43,10 @@ export async function loadWasmBackend(wasmInput?: unknown): Promise<RuntimeBacke
     encodeWithSchemaTransportJson: (schemaJson, valueJson) =>
       encodeWithSchemaTransportJson(schemaJson, valueJson),
     encodeBatchTransportJson: (valuesJson) => encodeBatchTransportJson(valuesJson),
+    encodeBoundStreamTransportJson: (schemaJson, valuesJson) =>
+      encodeBoundStreamTransportJson(schemaJson, valuesJson),
+    encodeBatchWithSchemaTransportJson: (schemaJson, valuesJson) =>
+      encodeBatchWithSchemaTransportJson(schemaJson, valuesJson),
     encodeDirect: (value) => encodeTransportJson(JSON.stringify(value)),
     decodeDirect: (bytes) => JSON.parse(decodeToTransportJson(bytes)) as TransportValueObj,
     encodeBatchDirect: (values) => encodeBatchTransportJson(JSON.stringify(values)),
@@ -91,6 +97,10 @@ function wrapSessionEncoder(inner: WasmSessionEncoder): RuntimeSessionEncoder {
     encodeWithSchemaTransportJson: (schemaJson, valueJson) =>
       inner.encodeWithSchemaTransportJson(schemaJson, valueJson),
     encodeBatchTransportJson: (valuesJson) => inner.encodeBatchTransportJson(valuesJson),
+    encodeBoundStreamTransportJson: (schemaJson, valuesJson) =>
+      inner.encodeBoundStreamTransportJson(schemaJson, valuesJson),
+    encodeBatchWithSchemaTransportJson: (schemaJson, valuesJson) =>
+      inner.encodeBatchWithSchemaTransportJson(schemaJson, valuesJson),
     encodePatchTransportJson: (valueJson) => inner.encodePatchTransportJson(valueJson),
     encodeMicroBatchTransportJson: (valuesJson) => inner.encodeMicroBatchTransportJson(valuesJson),
     encodeDirect: (value) => inner.encodeTransportJson(JSON.stringify(value)),
