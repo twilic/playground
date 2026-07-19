@@ -98,11 +98,15 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
         <LayerCard.Secondary>Schema</LayerCard.Secondary>
         <LayerCard.Primary className="flex flex-col gap-2">
           <Text variant="secondary" as="p">
-            Twilic Bound profile uses{' '}
+            Twilic v3 uses{' '}
             <Text variant="mono" as="span">
-              encodeWithSchema
+              encodeBoundStream
             </Text>{' '}
-            on a shared{' '}
+            (stream) and{' '}
+            <Text variant="mono" as="span">
+              encodeBatchWithSchema
+            </Text>{' '}
+            (pack) on a shared{' '}
             <Link
               href="https://github.com/twilic/twilic/blob/main/examples/schema-example.json"
               target="_blank"
@@ -121,11 +125,19 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
             <Text bold as="span">
               stream
             </Text>{' '}
-            — concatenated per-record messages (schema agreed out-of-band).{' '}
+            — Twilic{' '}
+            <Text variant="mono" as="span">
+              BOUND_STREAM
+            </Text>{' '}
+            vs concatenated per-record messages (schema agreed out-of-band).{' '}
             <Text bold as="span">
               pack / OCF / IPC
             </Text>{' '}
-            — one container with schema metadata once (Protobuf{' '}
+            — Twilic{' '}
+            <Text variant="mono" as="span">
+              SCHEMA_BATCH
+            </Text>{' '}
+            vs one container with schema metadata once (Protobuf{' '}
             <Text variant="mono" as="span">
               repeated
             </Text>
@@ -135,10 +147,11 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
       </LayerCard>
 
       <LayerCard className="w-full overflow-x-auto p-0">
-        <Table layout="fixed" className="min-w-408">
+        <Table layout="fixed" className="min-w-448">
           <colgroup>
             <col style={{ width: '11rem' }} />
-            <col style={{ width: '7.5rem' }} />
+            <col style={{ width: '8rem' }} />
+            <col style={{ width: '8rem' }} />
             <col style={{ width: '7.5rem' }} />
             <col style={{ width: '8.5rem' }} />
             <col style={{ width: '8.5rem' }} />
@@ -153,7 +166,8 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
           <Table.Header variant="compact">
             <Table.Row>
               <Table.Head sticky="left">Payload</Table.Head>
-              <Table.Head className="text-right whitespace-nowrap">Twilic bound</Table.Head>
+              <Table.Head className="text-right whitespace-nowrap">Twilic BOUND_STREAM</Table.Head>
+              <Table.Head className="text-right whitespace-nowrap">Twilic SCHEMA_BATCH</Table.Head>
               <Table.Head className="text-right whitespace-nowrap">Twilic dynamic</Table.Head>
               <Table.Head className="text-right whitespace-nowrap">Protobuf stream</Table.Head>
               <Table.Head className="text-right whitespace-nowrap">Protobuf pack</Table.Head>
@@ -174,7 +188,12 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
                 </Table.Cell>
                 <Table.Cell className="text-right whitespace-nowrap tabular-nums">
                   <Text bold size="sm" as="span">
-                    {formatBytes(row.twilicBound)}
+                    {formatBytes(row.twilicBoundStream)}
+                  </Text>
+                </Table.Cell>
+                <Table.Cell className="text-right whitespace-nowrap tabular-nums">
+                  <Text bold size="sm" as="span">
+                    {formatBytes(row.twilicSchemaBatch)}
                   </Text>
                 </Table.Cell>
                 <Table.Cell className="text-right whitespace-nowrap tabular-nums">
@@ -234,9 +253,16 @@ export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
       </LayerCard>
 
       <Text variant="secondary" size="sm" as="p">
-        &ldquo;vs best stream / pack&rdquo; = percent smaller than Twilic bound vs the smallest
-        schema-first baseline in that group (positive means Twilic is smaller). Dynamic Twilic omits
-        upfront schema but carries per-value type information.
+        &ldquo;vs best stream / pack&rdquo; = percent smaller for Twilic{' '}
+        <Text variant="mono" as="span">
+          BOUND_STREAM
+        </Text>{' '}
+        /{' '}
+        <Text variant="mono" as="span">
+          SCHEMA_BATCH
+        </Text>{' '}
+        vs the smallest schema-first baseline in that group (positive means Twilic is smaller).
+        Dynamic Twilic omits upfront schema but carries per-value type information.
       </Text>
     </>
   );

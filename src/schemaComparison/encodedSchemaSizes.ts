@@ -1,7 +1,8 @@
 import {
-  createSessionEncoder,
   encode,
   encodeBatch,
+  encodeBatchWithSchema,
+  encodeBoundStream,
   type Schema,
   type TwilicValue,
 } from '@twilic/core/advanced';
@@ -18,7 +19,8 @@ export interface SchemaCodecSizes {
 
 export interface SchemaSizeComparisonRow {
   payload: string;
-  twilicBound: number;
+  twilicBoundStream: number;
+  twilicSchemaBatch: number;
   twilicDynamic: number;
   protobuf: SchemaCodecSizes;
   avro: SchemaCodecSizes;
@@ -35,15 +37,14 @@ function pctSmallerVersus(smaller: number, larger: number): number {
   return (1 - smaller / larger) * 100;
 }
 
-function concatEncoded(chunks: Uint8Array[]): number {
-  return chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
+/** v3 BOUND_STREAM (0x0F): schema-bound compact record stream. */
+export function measureTwilicBoundStream(schema: Schema, records: TwilicValue[]): number {
+  return encodeBoundStream(schema, records).byteLength;
 }
 
-/** Session stream: schema_id on first message only (Bound profile). */
-export function measureTwilicBoundStream(schema: Schema, records: TwilicValue[]): number {
-  const session = createSessionEncoder();
-  const chunks = records.map((record) => session.encodeWithSchema(schema, record));
-  return concatEncoded(chunks);
+/** v3 SCHEMA_BATCH (0x0E): schema-aware columnar batch. */
+export function measureTwilicSchemaBatch(schema: Schema, records: TwilicValue[]): number {
+  return encodeBatchWithSchema(schema, records).byteLength;
 }
 
 export function measureTwilicDynamic(records: TwilicValue[]): number {
@@ -91,20 +92,22 @@ export async function measureSchemaScenario(
   };
   const arrowIpc = (await codecs.arrow.encodeIpc(records)).byteLength; // async IPC writer
 
-  const twilicBound = measureTwilicBoundStream(schema, scenario.records);
+  const twilicBoundStream = measureTwilicBoundStream(schema, scenario.records);
+  const twilicSchemaBatch = measureTwilicSchemaBatch(schema, scenario.records);
   const twilicDynamic = measureTwilicDynamic(scenario.records);
 
   const baselines = { protobuf, avro, flatbuffers, arrowIpc };
   return {
     payload: scenario.label,
-    twilicBound,
+    twilicBoundStream,
+    twilicSchemaBatch,
     twilicDynamic,
     protobuf,
     avro,
     flatbuffers,
     arrowIpc,
-    vsBestStreamPct: pctSmallerVersus(twilicBound, bestStreamBaseline(baselines)),
-    vsBestPackPct: pctSmallerVersus(twilicBound, bestPackBaseline(baselines)),
+    vsBestStreamPct: pctSmallerVersus(twilicBoundStream, bestStreamBaseline(baselines)),
+    vsBestPackPct: pctSmallerVersus(twilicSchemaBatch, bestPackBaseline(baselines)),
   };
 }
 

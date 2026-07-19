@@ -35,11 +35,16 @@ const pageCopy: Record<PlaygroundPageId, { title: string; description: ReactNode
     title: 'Schema-first comparison',
     description: (
       <>
-        Compare Twilic Bound profile (
+        Compare Twilic v3{' '}
         <Text variant="mono" as="span">
-          encodeWithSchema
-        </Text>
-        ) against Protobuf and schema-less Twilic on the same records. Schema matches{' '}
+          BOUND_STREAM
+        </Text>{' '}
+        /{' '}
+        <Text variant="mono" as="span">
+          SCHEMA_BATCH
+        </Text>{' '}
+        against Protobuf, Avro, FlatBuffers, Arrow IPC, and schema-less Twilic on the same records.
+        Schema matches{' '}
         <Link
           href="https://github.com/twilic/twilic/blob/main/examples/schema-example.json"
           target="_blank"

@@ -5,7 +5,7 @@
 Browser playground built with **Vite**, **React**, and [**Cloudflare Kumo**](https://kumo-ui.com/). Two views:
 
 1. **Encoded sizes** — same fixture payloads and serialization rules as [benchmark](https://github.com/twilic/benchmark); compares **Twilic**, **MessagePack**, **CBOR**, **BSON**, and **JSON (UTF-8)**.
-2. **Schema-first** — compares Twilic Bound profile (`encodeWithSchema`) with **Protobuf**, **Avro**, **FlatBuffers**, and **Apache Arrow IPC** (plus schema-less Twilic) on [schema-example.json](https://github.com/twilic/twilic/blob/main/examples/schema-example.json) style records.
+2. **Schema-first** — compares Twilic v3 `BOUND_STREAM` / `SCHEMA_BATCH` with **Protobuf**, **Avro**, **FlatBuffers**, and **Apache Arrow IPC** (plus schema-less Twilic) on [schema-example.json](https://github.com/twilic/twilic/blob/main/examples/schema-example.json) style records.
 
 BSON batches use the same `{ records: [...] }` shape; “vs …” columns use the bench formula \((1 - \text{twilic}/\text{baseline}) \times 100\).
 
@@ -16,7 +16,7 @@ This project always depends on a **local sibling** [`twilic-js`](https://github.
 - **Bench fixtures** — `single-small`, homogeneous and mixed **batch-256**, and **patch-session** payloads aligned with `benchmark`.
 - **Custom JSON** — paste or edit a root object `{…}` or array `[…]`; a highlighted row is added above the fixtures when the payload is valid.
 - **Size table** — byte counts per format plus percent smaller than Twilic vs MessagePack, CBOR, BSON, and JSON.
-- **Schema-first table** — `UserRecordV1` fixtures (×1, ×3 from schema-example, ×256 homogeneous); Twilic bound/dynamic; per-codec **stream** (concatenated messages) and **pack** (Protobuf repeated, Avro OCF, FlatBuffers vector, Arrow IPC).
+- **Schema-first table** — `UserRecordV1` fixtures (×1, ×3 from schema-example, ×256 homogeneous); Twilic `BOUND_STREAM` / `SCHEMA_BATCH` / dynamic; per-codec **stream** (concatenated messages) and **pack** (Protobuf repeated, Avro OCF, FlatBuffers vector, Arrow IPC).
 - **WASM runtime** — encoding runs in the browser via `@twilic/core/advanced` with `init({ prefer: 'wasm' })`; Node N-API is not bundled.
 
 ## Stack
