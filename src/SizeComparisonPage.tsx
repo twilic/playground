@@ -9,27 +9,17 @@ import { Text } from '@cloudflare/kumo/components/text';
 import { InfoIcon, UploadSimpleIcon } from '@phosphor-icons/react';
 
 import { buildBenchDataset } from './benchmarkPayloads.js';
-import { formatUserPayloadText, parseUserPayloadText } from './userPayloadText.js';
 import {
   measureBenchEncodedSizes,
   measureEncodedSizesForUserPayload,
   sanityCheckDecodes,
   type SizeComparisonRow,
 } from './encodedSizes.js';
+import { formatBytes, formatPct } from './formatDisplay.js';
+import { formatUserPayloadText, parseUserPayloadText } from './userPayloadText.js';
 
 export interface SizeComparisonPageProps {
   ready: boolean;
-}
-
-function formatBytes(bytes: number): string {
-  return bytes.toLocaleString('en-US');
-}
-
-function formatPct(value: number): string {
-  if (!Number.isFinite(value)) {
-    return '—';
-  }
-  return `${value.toFixed(2)}%`;
 }
 
 function payloadLabelFromFileName(fileName: string): string {

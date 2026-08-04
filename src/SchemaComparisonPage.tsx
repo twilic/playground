@@ -8,6 +8,7 @@ import { Text } from '@cloudflare/kumo/components/text';
 import { Banner } from '@cloudflare/kumo/components/banner';
 import { WarningCircleIcon } from '@phosphor-icons/react';
 
+import { formatBytes, formatPct } from './formatDisplay.js';
 import { buildSchemaBenchScenarios } from './schemaComparison/fixtures.js';
 import {
   measureAllSchemaScenarios,
@@ -16,17 +17,6 @@ import {
 
 export interface SchemaComparisonPageProps {
   ready: boolean;
-}
-
-function formatBytes(bytes: number): string {
-  return bytes.toLocaleString('en-US');
-}
-
-function formatPct(value: number): string {
-  if (!Number.isFinite(value)) {
-    return '—';
-  }
-  return `${value.toFixed(2)}%`;
 }
 
 export function SchemaComparisonPage({ ready }: SchemaComparisonPageProps) {
