@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "Playground for testing Twilic encoding and visualizing size savings.",
   "type": "module",
-  "packageManager": "pnpm@10.18.1",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
     "node": ">=24"
   },
