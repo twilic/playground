@@ -24,8 +24,12 @@ const pageCopy: Record<PlaygroundPageId, { title: string; description: ReactNode
           benchmark
         </Link>{' '}
         rules (MessagePack, CBOR, BSON, JSON). Uses local{' '}
-        <Link href="https://github.com/twilic/twilic-js" target="_blank" rel="noreferrer">
-          twilic-js
+        <Link
+          href="https://github.com/twilic/twilic/tree/main/runtimes/javascript"
+          target="_blank"
+          rel="noreferrer"
+        >
+          @twilic/core
         </Link>{' '}
         (WASM).
       </>

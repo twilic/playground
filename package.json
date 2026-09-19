@@ -26,7 +26,7 @@
     "@msgpack/msgpack": "^3.1.3",
     "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.3.3",
-    "@twilic/core": "file:../twilic-js",
+    "@twilic/core": "file:../twilic/runtimes/javascript",
     "apache-arrow": "^21.1.0",
     "avsc": "^5.7.9",
     "bson": "^7.3.1",
