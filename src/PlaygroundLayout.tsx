@@ -89,7 +89,8 @@ export function PlaygroundLayout({
                     {errorMessage}
                     <br />
                     <Text variant="mono-secondary" as="span">
-                      Build ../twilic/runtimes/javascript with pnpm build:wasm && pnpm build:ts
+                      Build ../twilic/runtimes/javascript with bun run build:wasm && bun run
+                      build:ts
                     </Text>
                   </>
                 }
