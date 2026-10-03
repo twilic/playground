@@ -9,6 +9,8 @@
     "node": ">=24"
   },
   "scripts": {
+    "build:wasm": "bun run --cwd ../twilic/runtimes/javascript build:wasm",
+    "build:core": "bun run --cwd ../twilic/runtimes/javascript build:wasm && bun run --cwd ../twilic/runtimes/javascript build:ts",
     "sync-wasm": "node scripts/sync-twilic-wasm.mjs",
     "predev": "bun run sync-wasm",
     "prebuild": "bun run sync-wasm",

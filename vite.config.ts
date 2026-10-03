@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,27 +7,28 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 
 const playgroundDir = path.dirname(fileURLToPath(import.meta.url));
-const twilicJsRoot = path.resolve(playgroundDir, '..', 'twilic', 'runtimes', 'javascript');
-const wasmPkgSource = path.join(twilicJsRoot, 'wasm', 'pkg');
 
 /**
- * Copies built wasm-bindgen output **into this repo** so Vite/Rolldown can resolve
- * `import '*.wasm'` (sibling-package paths under `../twilic/runtimes/javascript` fail during build).
+ * Ensures local wasm-bindgen output exists (builds @twilic/core if needed) and copies
+ * it into this repo so Vite/Rolldown can resolve `import '*.wasm'`.
  * Not committed (see `.gitignore`). Still uses your local @twilic/core build output.
  */
 function syncTwilicWasmIntoWorkspace(): Plugin {
-  const wasmPkgDest = path.join(playgroundDir, 'wasm', 'pkg');
-
   return {
     name: 'sync-twilic-wasm-workspace-copy',
     buildStart() {
-      if (!fs.existsSync(wasmPkgSource)) {
-        throw new Error(
-          `[playground] Missing ${wasmPkgSource}. Run bun run build:wasm in twilic/runtimes/javascript (see README).`,
-        );
+      const result = spawnSync(
+        process.execPath,
+        [path.join(playgroundDir, 'scripts', 'sync-twilic-wasm.mjs')],
+        {
+          cwd: playgroundDir,
+          stdio: 'inherit',
+          env: process.env,
+        },
+      );
+      if (result.status !== 0) {
+        throw new Error('[playground] sync-twilic-wasm failed (see log above).');
       }
-      fs.mkdirSync(wasmPkgDest, { recursive: true });
-      fs.cpSync(wasmPkgSource, wasmPkgDest, { recursive: true });
     },
   };
 }

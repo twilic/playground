@@ -40,23 +40,20 @@ your-workspace/
   playground/    # this repo
 ```
 
-Build WASM and TypeScript in `twilic/runtimes/javascript` before running the playground:
+`bun run sync-wasm` (also via **predev** / **prebuild**) builds WASM + TypeScript in `twilic/runtimes/javascript` when those outputs are missing, then mirrors `wasm/pkg` into this workspace. You still need Rust + `wasm-pack` for a clean tree — see [`runtimes/javascript/README.md`](https://github.com/twilic/twilic/blob/main/runtimes/javascript/README.md).
+
+Manual core build (optional):
 
 ```bash
-cd ../twilic/runtimes/javascript
-bun install
-bun run build:wasm
-bun run build:ts
+bun run build:core    # from playground: build:wasm + build:ts in ../twilic/runtimes/javascript
 ```
-
-For a full `@twilic/core` setup from a clean tree, follow [`runtimes/javascript/README.md`](https://github.com/twilic/twilic/blob/main/runtimes/javascript/README.md) (Rust, `wasm-pack`).
 
 ## Commands
 
 ```bash
 cd playground
 bun install
-bun run sync-wasm     # mirrors ../twilic/runtimes/javascript/wasm/pkg → wasm/pkg (also runs before dev/build)
+bun run sync-wasm     # builds core if needed, then mirrors wasm/pkg (also runs before dev/build)
 bun run dev           # http://localhost:5173
 bun run build         # production build (bundled WASM in dist/assets/)
 bun run preview       # preview the production build locally
@@ -82,7 +79,7 @@ The workflow (`.github/workflows/github-pages.yml`) checks out this repo, clones
 
 ## Implementation notes
 
-- `scripts/sync-twilic-wasm.mjs` (via **`bun run sync-wasm`**, **`predev`**, **`prebuild`**, and a matching Vite **`buildStart`** hook) copies `../twilic/runtimes/javascript/wasm/pkg` into **`wasm/pkg/`** (gitignored) so wasm imports resolve inside this workspace.
+- `scripts/sync-twilic-wasm.mjs` (via **`bun run sync-wasm`**, **`predev`**, **`prebuild`**, and a matching Vite **`buildStart`** hook) builds `@twilic/core` WASM/TS when missing, then copies `../twilic/runtimes/javascript/wasm/pkg` into **`wasm/pkg/`** (gitignored) so wasm imports resolve inside this workspace.
 - **`vite.config.ts`** sets **`assetsInclude`** for `*.wasm` so Rolldown can bundle wasm-pack’s `import '*.wasm'`. Without bundling, serving raw bindings from `/public` often breaks under **`bun run preview`** (MIME / module errors in Chromium).
 - **`build.rolldownOptions.output.codeSplitting`** splits vendor chunks (React, Kumo, codecs) to keep the main bundle under Vite’s size warning threshold.
 - **`src/shims/`** substitutes browser-safe backends so the client bundle excludes Node-only N-API loaders and `.node` binaries.
